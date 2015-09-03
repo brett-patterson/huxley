@@ -1,10 +1,11 @@
 # Copyright (c) 2011-2015 Berkeley Model United Nations. All rights reserved.
 # Use of this source code is governed by a BSD License (see LICENSE).
+import os
+from .roots import HUXLEY_ROOT, PROJECT_ROOT
 
-from .roots import HUXLEY_ROOT
 
-
-DEBUG = True
+DEBUG = os.environ.get('HUXLEY_DEBUG', True)
+ALLOWED_HOSTS = [os.environ.get('HUXLEY_HOST', '')]
 TEMPLATE_DEBUG = DEBUG
 
 # IMPORTANT: Override this in local settings!
@@ -16,16 +17,30 @@ MANAGERS = ADMINS
 
 SITE_ID = 1
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '%s/huxley.db' % HUXLEY_ROOT, # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': '%s/huxley.db' % HUXLEY_ROOT, # Or path to database file if using sqlite3.
+            'USER': '',                      # Not used with sqlite3.
+            'PASSWORD': '',                  # Not used with sqlite3.
+            'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+            'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        }
     }
-}
+
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get('HUXLEY_DB_NAME', ''),
+            'USER': os.environ.get('HUXLEY_DB_USER', ''),
+            'PASSWORD': os.environ.get('HUXLEY_DB_PASSWORD', ''),
+            'HOST': os.environ.get('HUXLEY_DB_HOST', ''),
+            'PORT': os.environ.get('HUXLEY_DB_PORT', '')
+        }
+    }
+
 
 ROOT_URLCONF = 'huxley.urls'
 
@@ -40,7 +55,7 @@ MEDIA_ROOT = ''
 MEDIA_URL = ''
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
-STATIC_ROOT = '%s/static/' % HUXLEY_ROOT
+STATIC_ROOT = '%s/public/static/' % PROJECT_ROOT
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = ()
