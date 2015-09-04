@@ -4,7 +4,7 @@ import os
 from .roots import HUXLEY_ROOT, PROJECT_ROOT
 
 
-DEBUG = os.environ.get('HUXLEY_DEBUG', True)
+DEBUG = os.environ.get('HUXLEY_DEBUG', '1') == '1'
 ALLOWED_HOSTS = [os.environ.get('HUXLEY_HOST', '')]
 TEMPLATE_DEBUG = DEBUG
 
